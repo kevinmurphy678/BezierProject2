@@ -1,0 +1,11 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
+
+dependencies {
+  compile "com.github.kotlin-graphics:imgui:-SNAPSHOT"
+  compile group: 'org.lwjgl', name: 'lwjgl-stb', version: '3.1.6'
+
+
+  compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
+  compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+}
