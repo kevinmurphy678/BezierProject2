@@ -23,6 +23,7 @@ public class FirstScreen implements Screen {
         long windowHandle = lwjgl3Graphics.getWindow().getWindowHandle();
         lwjglGL3.init(new GlfwWindow(windowHandle),false);
     }
+
     String fuck = "Hello";
     @Override
     public void render(float delta) {
