@@ -4,6 +4,6 @@ eclipse.project.name = appName + '-core'
 dependencies {
   compile "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
   compile "com.github.kotlin-graphics:imgui:789514ef0598386fd1431e92b916fed96c82da66"
-  compile group: 'org.lwjgl', name: 'lwjgl-stb', version: 'SNAPSHOT'
+  compile fileTree(dir: '../libs', include: '*.jar')
   compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 }
