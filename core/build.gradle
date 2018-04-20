@@ -8,6 +8,7 @@ dependencies {
   compile "com.badlogicgames.gdx:gdx:$gdxVersion"
 
 
+  compile group: 'org.mariuszgromada.math', name: 'MathParser.org-mXparser', version: '4.1.1'
   compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
 

@@ -16,6 +16,9 @@ public class BezierDemo extends Game {
         Helper.initiate();
 
         Helper.game = this;
+
+        Gdx.input.setInputProcessor(new ImGuiInputProcessor());
+
         setScreen(Helper.firstScreen);
     }
 

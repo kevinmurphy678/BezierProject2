@@ -86,7 +86,7 @@ public class Helper {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         float distance = 1f / smoothness;
         System.out.println(distance);
-        for(int i = 0; i < smoothness; i++)
+        for(int i = 1; i < smoothness+1; i++)
         {
             float t = i / smoothness;
             Vector2 start = new Vector2();
