@@ -37,8 +37,8 @@ public class FirstScreen implements Screen {
     float elapsedTime;
     int smoothness[] = {10};
     CharArray buffer = new CharArray();
-    Function f = new Function("f(x) = x^2");
-
+    Function f = new Function("f(x) = x^3");
+    char[] buffer2 = new char[32];
     @Override
     public void render(float delta) {
         elapsedTime += delta;
@@ -78,26 +78,19 @@ public class FirstScreen implements Screen {
             points[3] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             curve = new Bezier<Vector2>(points);
         }
+        
+        IMGUI.inputText("Function",buffer2,buffer2.length);
 
-
-         IMGUI.inputText("Function",buffer.items,buffer.size);
-
-
-//         for(int x = 0; x < 100; x++) {
-//             Function f = new Function("f(x) = x");
-//             System.out.println(f.getFunctionExpressionString());
-//             System.out.println(f.calculate(x));
-//         }
-
+        if(buffer2.length>0) {
+            f = new Function(new String(buffer2).trim());
+        }
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK);
-        for(float x = -4; x < 4; x+=0.1f)
+        for(float x = -8; x < 8; x+=0.1f)
         {
-
             shapeRenderer.circle(32*x + modifier/2, 32*(float)f.calculate(x)+modifier/2,4);
         }
-
         shapeRenderer.end();
 
         if(Gdx.input.isTouched() && Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
