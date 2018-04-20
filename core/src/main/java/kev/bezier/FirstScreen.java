@@ -37,8 +37,12 @@ public class FirstScreen implements Screen {
     float elapsedTime;
     int smoothness[] = {10};
     CharArray buffer = new CharArray();
-    Function f = new Function("f(x) = x^3");
+    Function f = new Function("f(x) = x");
     char[] buffer2 = new char[32];
+
+    final int SPACING = 32;
+    final int SIZE    = 64;
+
     @Override
     public void render(float delta) {
         elapsedTime += delta;
@@ -57,7 +61,7 @@ public class FirstScreen implements Screen {
         lwjglGL3.newFrame();
 
         Helper.renderMenuBar();
-        float modifier = 32*16;
+        float modifier = SPACING*SIZE;
         //IMGUI.text("FPS: " + Gdx.graphics.getFramesPerSecond());
         if (IMGUI.button("Generate Sin Curve", new Vec2(256, 48)))
         {
@@ -78,7 +82,7 @@ public class FirstScreen implements Screen {
             points[3] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             curve = new Bezier<Vector2>(points);
         }
-        
+
         IMGUI.inputText("Function",buffer2,buffer2.length);
 
         if(buffer2.length>0) {
@@ -87,9 +91,9 @@ public class FirstScreen implements Screen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK);
-        for(float x = -8; x < 8; x+=0.1f)
+        for(float x = -SIZE/2; x < SIZE/2; x+=0.1f)
         {
-            shapeRenderer.circle(32*x + modifier/2, 32*(float)f.calculate(x)+modifier/2,4);
+            shapeRenderer.circle(SPACING*x + modifier/2, SPACING*(float)f.calculate(x)+modifier/2,4);
         }
         shapeRenderer.end();
 
@@ -99,7 +103,7 @@ public class FirstScreen implements Screen {
         }
 
         IMGUI.sliderInt("Smoothness", smoothness, 0 ,25, "");
-        Helper.drawGrid(0,0,32,16);
+        Helper.drawGrid(0,0,SPACING,SIZE);
         Helper.renderBezierCurve(curve, smoothness[0], true, true);
 
         IMGUI.render();
