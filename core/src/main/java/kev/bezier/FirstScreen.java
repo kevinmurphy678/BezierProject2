@@ -41,7 +41,7 @@ public class FirstScreen implements Screen {
     char[] buffer2 = new char[32];
 
     final int SPACING = 32;
-    final int SIZE    = 64;
+    final int SIZE    = 32;
 
     @Override
     public void render(float delta) {
@@ -91,7 +91,7 @@ public class FirstScreen implements Screen {
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BLACK);
-        for(float x = -SIZE/2; x < SIZE/2; x+=0.1f)
+        for(float x = -SIZE/2; x < SIZE/2; x+=0.05f)
         {
             shapeRenderer.circle(SPACING*x + modifier/2, SPACING*(float)f.calculate(x)+modifier/2,4);
         }
@@ -102,6 +102,11 @@ public class FirstScreen implements Screen {
             camera.update();
         }
 
+        if(Gdx.input.isKeyPressed(Input.Keys.W))
+            camera.zoom-=delta;
+        else if(Gdx.input.isKeyPressed(Input.Keys.S))
+            camera.zoom+=delta;
+
         IMGUI.sliderInt("Smoothness", smoothness, 0 ,25, "");
         Helper.drawGrid(0,0,SPACING,SIZE);
         Helper.renderBezierCurve(curve, smoothness[0], true, true);
@@ -110,6 +115,8 @@ public class FirstScreen implements Screen {
 
         if(IMGUI.getDrawData() != null)
             lwjglGL3.renderDrawData(IMGUI.getDrawData());
+
+        camera.update();
     }
 
     @Override
