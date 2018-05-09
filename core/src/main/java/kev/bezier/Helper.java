@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import glm_.vec4.Vec4;
 import imgui.*;
@@ -79,40 +80,107 @@ public class Helper {
         shapeRenderer.end();
     }
 
-    public static void renderBezierCurve(Bezier<Vector2> curve, float smoothness, boolean drawHandles, boolean drawDots)
+
+
+    static private final float smoothness = 128f;
+    public static void renderBezierCurve(Bezier<Vector2> curve, float t, int order, boolean drawLines, boolean drawLinesConnecting)
     {
         if(curve==null)return;
+
+
+        if(drawLines && order > 1)
+        {
+            for(int i=0; i < order;i++)
+            {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+                shapeRenderer.setColor(Color.CYAN);
+                shapeRenderer.rectLine(curve.points.get(i), curve.points.get(i+1),2);
+
+                shapeRenderer.end();
+            }
+        }
+
+        if(drawLinesConnecting && order > 1)
+        {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+
+                Vector2 first = new Vector2(), second;
+                if(order >= 2) {
+                    Vector2 firstCurvePoint = new Vector2(curve.points.get(0));
+                    Vector2 secondCurvePoint = new Vector2(curve.points.get(1));
+
+                    firstCurvePoint.interpolate(curve.points.get(1), t, Interpolation.linear);
+                    secondCurvePoint.interpolate(curve.points.get(2), t, Interpolation.linear);
+                    shapeRenderer.setColor(Color.GREEN);
+                    shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
+                    first = new Vector2(firstCurvePoint.interpolate(secondCurvePoint,t, Interpolation.linear));
+                }
+
+                if(order==3)
+                {
+                    Vector2 firstCurvePoint = new Vector2(curve.points.get(1));
+                    Vector2 secondCurvePoint = new Vector2(curve.points.get(2));
+
+                    firstCurvePoint.interpolate(curve.points.get(2), t, Interpolation.linear);
+                    second = secondCurvePoint.interpolate(curve.points.get(3), t, Interpolation.linear);
+
+                    shapeRenderer.setColor(Color.GREEN);
+                    shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
+
+                    Vector2 firstCurvePoint2 = new Vector2(firstCurvePoint);
+
+                    firstCurvePoint2.interpolate(second, t, Interpolation.linear);
+                    first.interpolate(first, t, Interpolation.linear); //wrong
+
+                    shapeRenderer.setColor(Color.RED);
+                    shapeRenderer.rectLine(firstCurvePoint2, first,2);
+                }
+
+             shapeRenderer.end();
+        }
+
         shapeRenderer.setColor(Color.WHITE);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        float distance = 1f / smoothness;
-        System.out.println(distance);
+        Vector2 prevPoint = new Vector2();
+        curve.valueAt(prevPoint, 0);
         for(int i = 1; i < smoothness+1; i++)
         {
-            float t = i / smoothness;
-            Vector2 start = new Vector2();
-            Vector2 end = new Vector2();
-            curve.valueAt(start, t);
-            curve.valueAt(end, t-distance);
-            shapeRenderer.line(start,end);
+            float time = i / smoothness;
+            Vector2 start = new Vector2(prevPoint);
+            curve.valueAt(prevPoint, time);
+            shapeRenderer.line(start,prevPoint);
+            if(time>t)break;
         }
         shapeRenderer.end();
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        //Point 1
-        shapeRenderer.setColor(Color.WHITE);
+        shapeRenderer.setColor(Color.GREEN);
+        shapeRenderer.circle(prevPoint.x,prevPoint.y, 4);
+
+        shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(curve.points.get(0).x, curve.points.get(0).y, 4);
 
-
-        shapeRenderer.setColor(Color.NAVY);
+        shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(curve.points.get(1).x, curve.points.get(1).y, 4);
-        shapeRenderer.setColor(Color.NAVY);
-        shapeRenderer.circle(curve.points.get(2).x, curve.points.get(2).y, 4);
 
-        //Point 2
-        shapeRenderer.setColor(Color.WHITE);
-        shapeRenderer.circle(curve.points.get(3).x, curve.points.get(3).y, 4);
+        if(order>1) {
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.circle(curve.points.get(2).x, curve.points.get(2).y, 4);
+        }
+
+        if(order>2) {
+
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.circle(curve.points.get(3).x, curve.points.get(3).y, 4);
+        }
+
+
         shapeRenderer.end();
+
+
+
     }
 
     public static void renderMenuBar()
