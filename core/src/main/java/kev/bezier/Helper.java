@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import glm_.vec4.Vec4;
 import imgui.*;
@@ -47,12 +48,12 @@ public class Helper {
     private static void generateFont() {
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Roboto-Medium.ttf"));
         FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        parameter.shadowOffsetX = 3;
-        parameter.size = 48;
+        //parameter.shadowOffsetX = 3;
+        parameter.size = 16;
 
-        parameter.genMipMaps=true;
-        parameter.magFilter = Texture.TextureFilter.Linear;
-        parameter.minFilter = Texture.TextureFilter.Linear;
+       // parameter.genMipMaps=true;
+        //parameter.magFilter = Texture.TextureFilter.Linear;
+        //parameter.minFilter = Texture.TextureFilter.Linear;
 
         font = generator.generateFont(parameter);
         generator.dispose();
@@ -81,9 +82,8 @@ public class Helper {
     }
 
 
-
     static private final float smoothness = 128f;
-    public static void renderBezierCurve(Bezier<Vector2> curve, float t, int order, boolean drawLines, boolean drawLinesConnecting)
+    public static void renderBezierCurve(Bezier<Vector2> curve, float t, int order, boolean drawLines, boolean drawLinesConnecting, boolean drawT)
     {
         if(curve==null)return;
 
@@ -94,7 +94,7 @@ public class Helper {
             {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-                shapeRenderer.setColor(Color.CYAN);
+                shapeRenderer.setColor(Color.CORAL);
                 shapeRenderer.rectLine(curve.points.get(i), curve.points.get(i+1),2);
 
                 shapeRenderer.end();
@@ -114,6 +114,19 @@ public class Helper {
                     secondCurvePoint.interpolate(curve.points.get(2), t, Interpolation.linear);
                     shapeRenderer.setColor(Color.GREEN);
                     shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
+
+                    if(drawT) {
+                        shapeRenderer.setColor(Color.YELLOW);
+                        shapeRenderer.circle(firstCurvePoint.x, firstCurvePoint.y, 3);
+                        shapeRenderer.circle(secondCurvePoint.x, secondCurvePoint.y, 3);
+
+                        batch.begin();
+                        font.draw(batch, "T: " + t, firstCurvePoint.x, firstCurvePoint.y);
+                        font.draw(batch, "T: " + t, secondCurvePoint.x, secondCurvePoint.y);
+                        batch.end();
+                    }
+
+
                     first = new Vector2(firstCurvePoint.interpolate(secondCurvePoint,t, Interpolation.linear));
                 }
 
@@ -128,6 +141,17 @@ public class Helper {
                     shapeRenderer.setColor(Color.GREEN);
                     shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
 
+                    if(drawT) {
+                        shapeRenderer.setColor(Color.YELLOW);
+                        shapeRenderer.circle(firstCurvePoint.x, firstCurvePoint.y, 3);
+                        shapeRenderer.circle(secondCurvePoint.x, secondCurvePoint.y, 3);
+
+                        batch.begin();
+                        font.draw(batch, "T: " + t, firstCurvePoint.x, firstCurvePoint.y);
+                        font.draw(batch, "T: " + t, secondCurvePoint.x, secondCurvePoint.y);
+                        batch.end();
+                    }
+
                     Vector2 firstCurvePoint2 = new Vector2(firstCurvePoint);
 
                     firstCurvePoint2.interpolate(second, t, Interpolation.linear);
@@ -135,6 +159,17 @@ public class Helper {
 
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.rectLine(firstCurvePoint2, first,2);
+
+                    if(drawT) {
+                        shapeRenderer.setColor(Color.YELLOW);
+                        shapeRenderer.circle(firstCurvePoint2.x, firstCurvePoint2.y, 3);
+                        shapeRenderer.circle(first.x, first.y, 3);
+
+                        batch.begin();
+                        font.draw(batch, "T: " + t, firstCurvePoint2.x, firstCurvePoint2.y);
+                        font.draw(batch, "T: " + t, first.x, first.y);
+                        batch.end();
+                    }
                 }
 
              shapeRenderer.end();

@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Bezier;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.CharArray;
 import com.badlogic.gdx.utils.TimeUtils;
 import glm_.vec2.Vec2;
@@ -44,9 +46,12 @@ public class FirstScreen implements Screen {
 
     boolean drawLines[] = {false};
     boolean drawLinesConnecting[] = {false};
+    boolean drawT[] = {false};
 
     int order = 1;
 
+    Array<Vector2> pointsList = new Array<Vector2>();
+    boolean locked[] = new boolean[4];
     @Override
     public void render(float delta) {
         elapsedTime += delta;
@@ -58,9 +63,9 @@ public class FirstScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(camera.combined);
 
-       //batch.begin();
-       //font.draw(batch, "Bézier Curves", 48, Gdx.graphics.getHeight() + 380 + 32 * MathUtils.sin(elapsedTime));
-       // batch.end();
+       batch.begin();
+       font.draw(batch, "Bézier Curves: " + Gdx.graphics.getFramesPerSecond(), 48, Gdx.graphics.getHeight() + 380 + 32 * MathUtils.sin(elapsedTime));
+        batch.end();
 
         lwjglGL3.newFrame();
 
@@ -82,6 +87,8 @@ public class FirstScreen implements Screen {
             Vector2[] points = new Vector2[2];
             points[0] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            pointsList.clear();
+            pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
             order = 1;
         }
@@ -92,6 +99,8 @@ public class FirstScreen implements Screen {
             points[0] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             points[2] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            pointsList.clear();
+            pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
             order = 2;
         }
@@ -103,11 +112,28 @@ public class FirstScreen implements Screen {
             points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             points[2] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
             points[3] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            pointsList.clear();
+            pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
             order = 3;
         }
 
+        if(Gdx.input.isTouched()) {
+            for (Vector2 point : pointsList) {
+                Vector3 coords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+                if (coords.x < point.x + 4 && coords.x > point.x - 4 || locked[pointsList.indexOf(point,false)]) {
+                    if (coords.y < point.y + 4 && coords.y > point.y - 4 || locked[pointsList.indexOf(point,false)]) {
+                        point.add(Gdx.input.getDeltaX(), -Gdx.input.getDeltaY());
+                        locked[pointsList.indexOf(point,false)]= true;
+                        Vector2[] newPoints = pointsList.toArray(Vector2.class);
 
+                        curve = new Bezier<Vector2>(newPoints);
+                        System.out.println("ayy");
+                    }
+                }
+
+            }
+        }else{locked = new boolean[4];}
 
 //        IMGUI.inputText("Function",buffer2,buffer2.length);
 //
@@ -137,9 +163,11 @@ public class FirstScreen implements Screen {
 
         IMGUI.checkbox("Draw point lines", drawLines);
         IMGUI.checkbox("Draw connecting lines", drawLinesConnecting);
+        IMGUI.checkbox("Draw T", drawT);
+
 
         Helper.drawGrid(0,0,SPACING,SIZE);
-        Helper.renderBezierCurve(curve, smoothness[0],  order, drawLines[0], drawLinesConnecting[0]);
+        Helper.renderBezierCurve(curve, smoothness[0],  order, drawLines[0], drawLinesConnecting[0],drawT[0]);
 
         IMGUI.render();
 
