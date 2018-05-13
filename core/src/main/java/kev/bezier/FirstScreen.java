@@ -119,19 +119,24 @@ public class FirstScreen implements Screen {
         }
 
         if(Gdx.input.isTouched()) {
-            for (Vector2 point : pointsList) {
+            for (Vector2 point : pointsList) { //dumb way of doing this: don't code at 3 am
                 Vector3 coords = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
                 if (coords.x < point.x + 4 && coords.x > point.x - 4 || locked[pointsList.indexOf(point,false)]) {
                     if (coords.y < point.y + 4 && coords.y > point.y - 4 || locked[pointsList.indexOf(point,false)]) {
-                        point.add(Gdx.input.getDeltaX(), -Gdx.input.getDeltaY());
-                        locked[pointsList.indexOf(point,false)]= true;
-                        Vector2[] newPoints = pointsList.toArray(Vector2.class);
 
-                        curve = new Bezier<Vector2>(newPoints);
-                        System.out.println("ayy");
+                        boolean dragging = false;
+                        for(int i = 0; i < 4 && i != pointsList.indexOf(point,false); i++)
+                        {
+                            if(locked[i])dragging=true;
+                        }
+                        if(!dragging) {
+                            point.add(Gdx.input.getDeltaX(), -Gdx.input.getDeltaY());
+                            locked[pointsList.indexOf(point, false)] = true;
+                            Vector2[] newPoints = pointsList.toArray(Vector2.class);
+                            curve = new Bezier<Vector2>(newPoints);
+                        }
                     }
                 }
-
             }
         }else{locked = new boolean[4];}
 
