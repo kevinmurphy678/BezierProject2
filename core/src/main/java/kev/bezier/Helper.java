@@ -117,7 +117,7 @@ public class Helper {
                     shapeRenderer.setColor(Color.GREEN);
                     shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
 
-                    if(drawT) {
+                    if(drawT&& t < 1 && t > 0) {
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(firstCurvePoint.x, firstCurvePoint.y, 3);
                         shapeRenderer.circle(secondCurvePoint.x, secondCurvePoint.y, 3);
@@ -143,7 +143,7 @@ public class Helper {
                     shapeRenderer.setColor(Color.GREEN);
                     shapeRenderer.rectLine(firstCurvePoint, secondCurvePoint, 2);
 
-                    if(drawT) {
+                    if(drawT&& t < 1 && t > 0) {
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(firstCurvePoint.x, firstCurvePoint.y, 3);
                         shapeRenderer.circle(secondCurvePoint.x, secondCurvePoint.y, 3);
@@ -162,7 +162,7 @@ public class Helper {
                     shapeRenderer.setColor(Color.RED);
                     shapeRenderer.rectLine(firstCurvePoint2, first,2);
 
-                    if(drawT) {
+                    if(drawT && t < 1 && t > 0) {
                         shapeRenderer.setColor(Color.YELLOW);
                         shapeRenderer.circle(firstCurvePoint2.x, firstCurvePoint2.y, 3);
                         shapeRenderer.circle(first.x, first.y, 3);
@@ -195,7 +195,7 @@ public class Helper {
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.circle(prevPoint.x,prevPoint.y, 4);
-        if(drawT) {
+        if(drawT&& t < 1 && t > 0) {
             batch.begin();
             font.draw(batch, "T: " + t, prevPoint.x, prevPoint.y);
             batch.end();
