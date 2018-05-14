@@ -66,7 +66,7 @@ public class FirstScreen implements Screen {
         shapeRenderer.setProjectionMatrix(camera.combined);
 
        batch.begin();
-       font.draw(batch, "Bézier Curves: " + Gdx.graphics.getFramesPerSecond(), 48, Gdx.graphics.getHeight() + 380 + 32 * MathUtils.sin(elapsedTime));
+       font.draw(batch, "Bézier Curves:", 470, 1060+ 8 * MathUtils.sin(elapsedTime));
         batch.end();
 
         lwjglGL3.newFrame();
@@ -246,7 +246,6 @@ public class FirstScreen implements Screen {
         {
             isAnimating=true;
             catTime=0;
-
         }
 
         if(isAnimating)
