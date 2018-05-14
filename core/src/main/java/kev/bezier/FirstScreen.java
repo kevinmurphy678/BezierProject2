@@ -36,13 +36,13 @@ public class FirstScreen implements Screen {
     Bezier<Vector2> curve;
 
     float elapsedTime;
-    float smoothness[] = {10};
+    float smoothness[] = {1};
     CharArray buffer = new CharArray();
     Function f = new Function("f(x) = x");
     char[] buffer2 = new char[32];
 
-    final int SPACING = 32;
-    final int SIZE    = 32;
+    public static final int SPACING = 32;
+    public static final int SIZE    = 32;
 
     boolean drawLines[] = {false};
     boolean drawLinesConnecting[] = {false};
@@ -70,7 +70,7 @@ public class FirstScreen implements Screen {
         lwjglGL3.newFrame();
 
         Helper.renderMenuBar();
-        float modifier = SPACING*SIZE;
+        int modifier = SPACING*SIZE;
         //IMGUI.text("FPS: " + Gdx.graphics.getFramesPerSecond());
 //        if (IMGUI.button("Generate Sin Curve", new Vec2(256, 48)))
 //        {
@@ -85,8 +85,11 @@ public class FirstScreen implements Screen {
         if (IMGUI.button("Generate Linear Curve", new Vec2(256, 48)))
         {
             Vector2[] points = new Vector2[2];
-            points[0] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            points[0] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[1] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+
+
+
             pointsList.clear();
             pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
@@ -96,9 +99,9 @@ public class FirstScreen implements Screen {
         if (IMGUI.button("Generate Quadratic Curve", new Vec2(256, 48)))
         {
             Vector2[] points = new Vector2[3];
-            points[0] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[2] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            points[0] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[1] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[2] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
             pointsList.clear();
             pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
@@ -108,10 +111,10 @@ public class FirstScreen implements Screen {
         if (IMGUI.button("Generate Cubic Curve", new Vec2(256, 48)))
         {
             Vector2[] points = new Vector2[4];
-            points[0] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[1] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[2] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
-            points[3] = new Vector2(MathUtils.random(modifier),MathUtils.random(modifier));
+            points[0] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[1] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[2] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
+            points[3] = new Vector2(Math.round(MathUtils.random(modifier)/SPACING)*SPACING,Math.round(MathUtils.random(modifier)/SPACING)*SPACING);
             pointsList.clear();
             pointsList.addAll(points);
             curve = new Bezier<Vector2>(points);
@@ -170,6 +173,24 @@ public class FirstScreen implements Screen {
         IMGUI.checkbox("Draw connecting lines", drawLinesConnecting);
         IMGUI.checkbox("Draw T", drawT);
 
+        if(order==1 && pointsList.size>0)
+        {
+
+            float x =    (pointsList.get(0).x / SPACING) - (SPACING/2)  ;
+            float x1 =   (pointsList.get(1).x / SPACING)  - (SPACING/2) ;
+            float y =    (pointsList.get(0).y / SPACING) - (SPACING/2)  ;
+            float y1 =   (pointsList.get(1).y / SPACING)  - (SPACING/2) ;
+
+            Vector2 value = new Vector2();
+            curve.valueAt(value, smoothness[0]);
+            value.x = (value.x / SPACING) - (SPACING/2);
+            value.y = (value.y / SPACING) - (SPACING/2);
+
+
+            IMGUI.text("(1-t) * P0 + t * P1");
+            IMGUI.text("X = " + (1-smoothness[0]) + " * " + x + " + " + smoothness[0] + " * " + x1 + " = " + value.x);
+            IMGUI.text("Y = " + (1-smoothness[0]) + " * " + y + " + " + smoothness[0] + " * " + y1 + " = " + value.y);
+        }
 
         Helper.drawGrid(0,0,SPACING,SIZE);
         Helper.renderBezierCurve(curve, smoothness[0],  order, drawLines[0], drawLinesConnecting[0],drawT[0]);

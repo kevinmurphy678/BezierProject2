@@ -17,6 +17,8 @@ import glm_.vec4.Vec4;
 import imgui.*;
 import imgui.impl.LwjglGL3;
 
+import static kev.bezier.FirstScreen.SPACING;
+
 
 public class Helper {
 
@@ -193,9 +195,23 @@ public class Helper {
 
         shapeRenderer.setColor(Color.GREEN);
         shapeRenderer.circle(prevPoint.x,prevPoint.y, 4);
+        if(drawT) {
+            batch.begin();
+            font.draw(batch, "T: " + t, prevPoint.x, prevPoint.y);
+            batch.end();
+        }
 
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(curve.points.get(0).x, curve.points.get(0).y, 4);
+        batch.begin();
+
+        float x =    (curve.points.get(0).x / SPACING) - (SPACING/2)  ;
+        float x1 =   (curve.points.get(1).x / SPACING)  - (SPACING/2)  ;
+        float y =    (curve.points.get(0).y / SPACING) - (SPACING/2)  ;
+        float y1 =   (curve.points.get(1).y / SPACING)  - (SPACING/2)  ;
+
+        font.draw(batch, "(" + x1+ "," + y1 + ")", curve.points.get(1).x, curve.points.get(1).y);
+        font.draw(batch, "(" + x+ "," + y + ")", curve.points.get(0).x, curve.points.get(0).y);
 
         shapeRenderer.setColor(Color.RED);
         shapeRenderer.circle(curve.points.get(1).x, curve.points.get(1).y, 4);
@@ -203,15 +219,27 @@ public class Helper {
         if(order>1) {
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.circle(curve.points.get(2).x, curve.points.get(2).y, 4);
+
+            float x2 =    (curve.points.get(2).x / SPACING) - (SPACING/2)  ;
+            float y2 =   (curve.points.get(2).y / SPACING)  - (SPACING/2)  ;
+
+            font.draw(batch, "(" + x2+ "," + y2 + ")", curve.points.get(2).x, curve.points.get(2).y);
+
+
         }
 
         if(order>2) {
 
             shapeRenderer.setColor(Color.RED);
             shapeRenderer.circle(curve.points.get(3).x, curve.points.get(3).y, 4);
+
+            float x3 =    (curve.points.get(3).x / SPACING) - (SPACING/2)  ;
+            float y3 =   (curve.points.get(3).y / SPACING)  - (SPACING/2)  ;
+
+            font.draw(batch, "(" + x3+ "," + y3+ ")", curve.points.get(3).x, curve.points.get(3).y);
         }
 
-
+        batch.end();
         shapeRenderer.end();
 
 
